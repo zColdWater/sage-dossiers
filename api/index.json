@@ -1,0 +1,79 @@
+{
+  "name": "Sage Dossiers",
+  "schema": "sage-dossier/0.1",
+  "license": "CC-BY-4.0",
+  "site": "https://zcoldwater.github.io/sage-dossiers/",
+  "updated": "2026-11-21",
+  "dossiers": [
+    {
+      "slug": "aero-base",
+      "name": "Aero (merged Aerodrome + Velodrome), Base hub",
+      "chain": "base",
+      "as_of": "2026-11-21",
+      "attention": "elevated (opacity: key holders unpublished)",
+      "scores": {
+        "U_upgradeability": null,
+        "A_admin_power": 2,
+        "G_governance_capture": null,
+        "L_lifecycle": 1,
+        "I_incidents": null
+      },
+      "unknowns": 6,
+      "html": "https://zcoldwater.github.io/sage-dossiers/dossiers/aero-base.html",
+      "json": "https://zcoldwater.github.io/sage-dossiers/api/dossiers/aero-base.json"
+    },
+    {
+      "slug": "morpho-blue-base",
+      "name": "Morpho Blue (Morpho Markets V1) — core contract",
+      "chain": "base",
+      "as_of": "2026-11-20",
+      "attention": "low (core only)",
+      "scores": {
+        "U_upgradeability": 0,
+        "A_admin_power": 1,
+        "G_governance_capture": 0,
+        "L_lifecycle": 0,
+        "I_incidents": 0
+      },
+      "unknowns": 4,
+      "html": "https://zcoldwater.github.io/sage-dossiers/dossiers/morpho-blue-base.html",
+      "json": "https://zcoldwater.github.io/sage-dossiers/api/dossiers/morpho-blue-base.json"
+    },
+    {
+      "slug": "moonwell-base",
+      "name": "Moonwell (Base deployment)",
+      "chain": "base",
+      "as_of": "2026-11-20",
+      "attention": "elevated (governance + incidents)",
+      "scores": {
+        "U_upgradeability": null,
+        "A_admin_power": 3,
+        "G_governance_capture": 2,
+        "L_lifecycle": 1,
+        "I_incidents": 2
+      },
+      "unknowns": 4,
+      "html": "https://zcoldwater.github.io/sage-dossiers/dossiers/moonwell-base.html",
+      "json": "https://zcoldwater.github.io/sage-dossiers/api/dossiers/moonwell-base.json"
+    },
+    {
+      "slug": "aerodrome-base",
+      "name": "Aerodrome Finance (legacy v2 contracts), superseded by Aero",
+      "chain": "base",
+      "as_of": "2026-11-21",
+      "attention": "high (lifecycle: deprecated)",
+      "scores": {
+        "U_upgradeability": null,
+        "A_admin_power": 2,
+        "G_governance_capture": 1,
+        "L_lifecycle": 3,
+        "I_incidents": 0
+      },
+      "unknowns": 3,
+      "html": "https://zcoldwater.github.io/sage-dossiers/dossiers/aerodrome-base.html",
+      "json": "https://zcoldwater.github.io/sage-dossiers/api/dossiers/aerodrome-base.json"
+    }
+  ],
+  "aero_official_addresses": "https://zcoldwater.github.io/sage-dossiers/api/aero-official-addresses.json",
+  "request": "https://github.com/zColdWater/sage-dossiers/issues/new?template=dossier-request.yml"
+}

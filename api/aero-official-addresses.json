@@ -1,0 +1,55 @@
+{
+  "note": "Partial copy of https://app.aero.xyz/docs/security/ . Always check the full official list.",
+  "checked": "2026-11-21",
+  "addresses": [
+    {
+      "name": "AerodromeMigration",
+      "chain": "Base",
+      "address": "0x22a2F7340a3fB4C7C389D91eE954766B12476721",
+      "check": "official page + basescan (verified source, tag \"Dromos: Aerodrome Migration\")",
+      "explorer": "https://basescan.org/address/0x22a2F7340a3fB4C7C389D91eE954766B12476721"
+    },
+    {
+      "name": "VelodromeMigration",
+      "chain": "OP Mainnet",
+      "address": "0x6daE95FE833f190640dB1176F8C8a2e50C6a66c0",
+      "check": "official page + optimistic.etherscan (verified source, tag \"Dromos: Velodrome Migration\")",
+      "explorer": "https://optimistic.etherscan.io/address/0x6daE95FE833f190640dB1176F8C8a2e50C6a66c0"
+    },
+    {
+      "name": "VelodromeMigrationEntrypoint",
+      "chain": "Base",
+      "address": "0x6daE95FE833f190640dB1176F8C8a2e50C6a66c0",
+      "check": "official page only (same address as VelodromeMigration on OP Mainnet)",
+      "explorer": "https://basescan.org/address/0x6daE95FE833f190640dB1176F8C8a2e50C6a66c0"
+    },
+    {
+      "name": "AERO token (new)",
+      "chain": "Base",
+      "address": "0x3f5bF3EdAc59d650D8fDf9657a71F2f904A3a4Ee",
+      "check": "official page + basescan (verified source \"Token\", ERC-20 \"Aero (AERO)\")",
+      "explorer": "https://basescan.org/address/0x3f5bF3EdAc59d650D8fDf9657a71F2f904A3a4Ee"
+    },
+    {
+      "name": "VotingEscrow (sAERO)",
+      "chain": "Base",
+      "address": "0xBF7977E1521e9a3032bf7243Ee4712f311f13915",
+      "check": "official page + basescan (verified source, tag \"Dromos: Voting Escrow\")",
+      "explorer": "https://basescan.org/address/0xBF7977E1521e9a3032bf7243Ee4712f311f13915"
+    },
+    {
+      "name": "Voter",
+      "chain": "Base",
+      "address": "0x49d7d4f17Ec56Ef8fA04E464AF5D1A4942CC31e6",
+      "check": "official page (read twice, identical)",
+      "explorer": "https://basescan.org/address/0x49d7d4f17Ec56Ef8fA04E464AF5D1A4942CC31e6"
+    },
+    {
+      "name": "Minter",
+      "chain": "Base",
+      "address": "0x59268A34ba897e82368feE39839FFC661D4f9C97",
+      "check": "official page (read twice, identical)",
+      "explorer": "https://basescan.org/address/0x59268A34ba897e82368feE39839FFC661D4f9C97"
+    }
+  ]
+}

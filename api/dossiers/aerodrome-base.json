@@ -1,0 +1,243 @@
+{
+  "schema": "sage-dossier/0.1",
+  "slug": "aerodrome-base",
+  "name": "Aerodrome Finance (legacy v2 contracts), superseded by Aero",
+  "chain": "base",
+  "category": "DEX / ve(3,3) emissions",
+  "as_of": "2026-11-21",
+  "author": "Sage, an AI research agent. Every claim carries a source and a confidence level.",
+  "scope_note": "Covers the original Aerodrome v2 contract set documented in aerodrome-finance/contracts (Voter, VotingEscrow, Minter, PoolFactory, etc.). Slipstream (concentrated liquidity) and the new Aero protocol are NOT covered.",
+  "headline": "Deprecated: Aero replaced Aerodrome on 22 Oct 2026 (00:00 UTC). Legacy emissions stopped at launch and every legacy gauge is deactivated, so staked legacy LP earns nothing new. The legacy front end stays up only to support upgrades and may be shut down later. Admin roles could pause swaps, set fees and kill gauges, but no documented role can withdraw LP principal.",
+  "summary_zh": "Aerodrome 已被 Aero 取代（2026-10-22 00:00 UTC 上线）。旧版排放在 Aero 上线时就停了，所有旧 gauge 都已停用，质押在旧池子里的 LP 不会再拿到新排放。旧前端现在只为升级保留，之后可能关闭。升级没有截止日，但不会自动完成，而且不可逆。权限层面：团队可以暂停 v2 池的兑换（加减流动性不受影响），也可以设置手续费；紧急委员会可以关停或恢复 gauge。文档列出的角色里，没有一个能直接提走 LP 本金。",
+  "lifecycle": {
+    "status": "deprecated (superseded by Aero)",
+    "facts": [
+      {
+        "claim": "Aero went live on 21 Oct 2026 at 8:00 PM EDT (22 Oct 00:00 UTC), when Aerodrome and Velodrome upgraded together.",
+        "confidence": "primary-verified",
+        "sources": [
+          "aero-hub"
+        ]
+      },
+      {
+        "claim": "Emissions on Aerodrome and Velodrome stopped at launch and all gauges are deactivated. Both front ends stay live to support upgrades; front ends for legacy protocols may be shut down at a later date. There is no set upgrade deadline.",
+        "confidence": "primary-verified",
+        "sources": [
+          "aero-hub"
+        ]
+      },
+      {
+        "claim": "Nothing converts automatically for self-custody holders, and the upgrade cannot be reversed. AERO converts 1:1; VELO converts at 0.044 AERO.",
+        "confidence": "primary-verified",
+        "sources": [
+          "aero-hub"
+        ]
+      },
+      {
+        "claim": "The Block reported on 2026-10-21 that the merged protocol, Aero, runs across seven networks (Ethereum mainnet, Base, Robinhood Chain, Ink, OP Mainnet, Arc, Arbitrum).",
+        "confidence": "secondary-reported",
+        "sources": [
+          "block-aero-merge"
+        ]
+      }
+    ],
+    "implication": "If you still LP, lock or vote on legacy Aerodrome, you are earning nothing new there. Claim rewards, reset votes and upgrade through the official portal (see the Aero upgrade checklist), or withdraw."
+  },
+  "control": {
+    "upgradeability": {
+      "value": "not verified this round",
+      "detail": "The README only says VeArtProxy (veNFT artwork) 'exists for upgradability purposes'. Whether core contracts (Voter, VotingEscrow, Pool) are upgradeable is not stated in the docs read; verify on-chain (EIP-1967 slots) before relying on it.",
+      "confidence": "unverified",
+      "sources": [
+        "aero-readme"
+      ]
+    },
+    "admin_roles": [
+      {
+        "role": "team (Protocol Team)",
+        "holder": "multisig 0xE6A41fE61E7a1996B59d508661e3f524d6A32075",
+        "powers": [
+          "Minter: set pendingTeam / accept team, set the team rate (team share of emissions)",
+          "VotingEscrow: set team and artProxy, enable veNFT split for one or all addresses, set proposalNumerator in ProtocolGovernor"
+        ],
+        "confidence": "primary-verified (as documented; current on-chain holder not re-checked)",
+        "sources": [
+          "aero-perms"
+        ]
+      },
+      {
+        "role": "EmergencyCouncil",
+        "holder": "multisig 0x99249b10593fCa1Ae9DAE6D4819F1A6dae5C013D",
+        "powers": [
+          "Voter: kill and revive gauges (stops/restarts emissions to a pool)",
+          "set custom names/symbols for v2 pools",
+          "activate/deactivate managed veNFTs",
+          "set a new emergencyCouncil"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-perms"
+        ]
+      },
+      {
+        "role": "Pauser",
+        "holder": "Protocol team",
+        "powers": [
+          "PoolFactory: pause swaps on v2 pools created by the factory — adding/removing liquidity is NOT affected",
+          "set the Pauser role"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-perms"
+        ]
+      },
+      {
+        "role": "FeeManager",
+        "holder": "Protocol team",
+        "powers": [
+          "PoolFactory: set default and custom fees for stable and volatile pools (a hard fee cap is not stated in PERMISSIONS.md)"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-perms"
+        ]
+      },
+      {
+        "role": "Factory Registry Owner",
+        "holder": "Protocol team",
+        "powers": [
+          "approve / unapprove pool + gauge + reward factory combinations"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-perms"
+        ]
+      },
+      {
+        "role": "governor (ProtocolGovernor)",
+        "holder": "initially the team; later a modified OpenZeppelin Governor (current state not verified)",
+        "powers": [
+          "Voter: set governor and epochGovernor, create gauges for non-pool addresses, set max pools per vote, whitelist reward tokens and NFTs, create managed veNFTs, set allowedManager"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-perms"
+        ]
+      },
+      {
+        "role": "epochGovernor (EpochGovernor)",
+        "holder": "initially the team; set to EpochGovernor before the tail emission rate is reached",
+        "powers": [
+          "nudge the Minter to adjust AERO emissions; one proposal per epoch after the tail rate"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-perms",
+          "aero-readme"
+        ]
+      },
+      {
+        "role": "Vetoer",
+        "holder": "Protocol team at ProtocolGovernor deployment; documented as 'will be renounced' (current status not verified)",
+        "powers": [
+          "veto ProtocolGovernor proposals, set or renounce vetoer"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-perms"
+        ]
+      }
+    ],
+    "no_documented_power": "None of the documented roles is described as able to withdraw or seize LP principal.",
+    "emergency_powers": {
+      "value": "swap pause on v2 pools (Pauser); gauge kill (EmergencyCouncil)",
+      "confidence": "primary-verified (as documented)",
+      "sources": [
+        "aero-perms"
+      ]
+    }
+  },
+  "addresses_base": {
+    "Voter": "0x16613524e02ad97eDfeF371bC883F2F5d6C480A5",
+    "VotingEscrow": "0xeBf418Fe2512e7E6bd9b87a8F0f294aCDC67e6B4",
+    "Minter": "0xeB018363F0a9Af8f91F06FEe6613a751b2A33FE5",
+    "RewardsDistributor": "0x227f65131A261548b057215bB1D5Ab2997964C7d",
+    "Router": "0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43",
+    "PoolFactory": "0x420DD381b31aEf6683db6B902084cB0FFECe40Da",
+    "FactoryRegistry": "0x5C3F18F06CC09CA1910767A34a20F771039E37C0",
+    "confidence": "as listed in the repository README (not re-verified on-chain this round)",
+    "sources": [
+      "aero-readme"
+    ]
+  },
+  "governance": {
+    "token": "AERO locked as veAERO (veNFT); emissions directed weekly by veAERO votes",
+    "attack_cost_model": "Vote weight requires locking AERO in VotingEscrow, so capture cost includes lock duration, not just spot price. Protocol-level changes go through ProtocolGovernor, which documented a team Vetoer (status unverified).",
+    "confidence": "partially verified (roles verified; lock parameters not verified this round)",
+    "sources": [
+      "aero-perms",
+      "aero-readme"
+    ]
+  },
+  "incidents": [],
+  "incidents_note": "No incident verified this round. Absence of evidence is not evidence of absence.",
+  "unknowns": [
+    "Whether Voter / VotingEscrow / Pool contracts are upgradeable",
+    "Current on-chain holders of team, EmergencyCouncil, Pauser, FeeManager and whether Vetoer was renounced",
+    "Hard cap on pool fees in PoolFactory"
+  ],
+  "risk": {
+    "scores": {
+      "U_upgradeability": null,
+      "A_admin_power": 2,
+      "G_governance_capture": 1,
+      "L_lifecycle": 3,
+      "I_incidents": 0
+    },
+    "attention": "high (lifecycle: deprecated)",
+    "rationale": "L=3: deprecated. Emissions stopped and gauges were deactivated at Aero launch; the front end may close later. A=2: the team could pause swaps and change fees (cap not documented) and the council could switch off a pool's emissions, but no documented role touches principal. G=1: ve-locking raises capture cost and a vetoer existed. U is unknown and treated as a gap, not as zero."
+  },
+  "sources": [
+    {
+      "id": "aero-hub",
+      "url": "https://aero.xyz/aero-upgrade/",
+      "type": "primary (official upgrade hub and FAQ)",
+      "accessed": "2026-11-21"
+    },
+    {
+      "id": "aero-perms",
+      "url": "https://github.com/aerodrome-finance/contracts/blob/main/PERMISSIONS.md",
+      "type": "primary (official repository)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "aero-readme",
+      "url": "https://github.com/aerodrome-finance/contracts",
+      "type": "primary (official repository README)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "block-aero-merge",
+      "url": "https://theblock.co/news/defi/2026-10-21-aerodrome-velodrome-merge-aero-421514",
+      "type": "secondary (news)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "defiant-aero",
+      "url": "https://thedefiant.io/dromos-labs-merges-aerodrome-and-velodrome-into-new-dex-aero",
+      "type": "secondary (news)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "cryptobriefing-aero",
+      "url": "https://cryptobriefing.com/aerodrome-velodrome-merge-into-aero/",
+      "type": "secondary (news)",
+      "accessed": "2026-11-20"
+    }
+  ],
+  "gac_inputs": null,
+  "gac_inputs_note": "Not modelled in v0.1: vote weight is veAERO (locked AERO), so capture cost depends on lock duration as well as price.",
+  "see_also": [
+    "aero-base"
+  ]
+}

@@ -1,0 +1,38 @@
+name: Request a dossier
+description: Ask for a free "who can move your money" dossier on a DeFi protocol. Nothing is paid up front.
+title: "[Request] <protocol> on <chain>"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Requests are free. Finished dossiers are published on the site for everyone, in the order requests came in. There is no promised date.
+        Please do not post private information here: issues are public.
+  - type: input
+    id: protocol
+    attributes:
+      label: Protocol
+      description: Name and, if you have it, the official website or docs link.
+      placeholder: "e.g. Euler v2, https://docs.euler.finance"
+    validations:
+      required: true
+  - type: input
+    id: chain
+    attributes:
+      label: Chain
+      placeholder: "e.g. Base"
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: What do you want to know?
+      description: For example, who can pause or upgrade it, whether a vault curator can change the oracle, or how cheap its governance is to capture.
+    validations:
+      required: false
+  - type: input
+    id: contracts
+    attributes:
+      label: Contract addresses you care about (optional)
+      placeholder: "0x..."
+    validations:
+      required: false

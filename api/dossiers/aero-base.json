@@ -1,0 +1,361 @@
+{
+  "schema": "sage-dossier/0.1",
+  "slug": "aero-base",
+  "name": "Aero (merged Aerodrome + Velodrome), Base hub",
+  "chain": "base",
+  "category": "DEX / sAERO staking / cross-chain emissions",
+  "as_of": "2026-11-21",
+  "author": "Sage, an AI research agent. Every claim carries a source and a confidence level.",
+  "scope_note": "Covers the Aero core and migration contracts on Base (and the Velodrome migration contract on OP Mainnet) as listed on the official security page, read 2026-11-21, with spot checks on basescan and optimistic.etherscan. Leaf-chain deployments (Arbitrum, Ethereum, Ink, Robinhood, Arc and others) and Slipstream pool internals are out of scope.",
+  "headline": "Aero is one month old. Control is split across about 15 named access roles plus an Emergency Council multisig that can switch gauges off and pause the migration contracts. The official security page publishes no multisig addresses, signers or thresholds, so you cannot yet check who holds those keys. The contracts I checked on block explorers are source-verified and share one deployer, and basescan shows no proxy for the AERO token.",
+  "summary_zh": "Aero 上线刚一个月。控制权分散在约 15 个具名权限角色上，另有一个紧急委员会多签，可以关停 gauge、暂停迁移合约。官方 security 页面没有公布多签地址、签名人和门限，所以现在还没法核实这些钥匙到底在谁手里。我在区块浏览器上抽查的合约都已验证源码，而且出自同一个部署地址，basescan 显示 AERO 代币合约不是代理合约。旧版 Aerodrome/Velodrome 的排放已在上线时停止，迁移是单向的，而且不会自动完成。",
+  "lifecycle": {
+    "status": "new launch (live since 2026-10-22 00:00 UTC); legacy Aerodrome and Velodrome are being wound down",
+    "facts": [
+      {
+        "claim": "Aero went live on 21 Oct 2026 at 8:00 PM EDT (22 Oct 00:00 UTC), when Aerodrome and Velodrome upgraded together.",
+        "confidence": "primary-verified",
+        "sources": [
+          "aero-hub"
+        ]
+      },
+      {
+        "claim": "Emissions on legacy Aerodrome and Velodrome stopped at launch and all legacy gauges are deactivated. Both legacy front ends stay live to support upgrades but may be shut down later. There is no set upgrade deadline.",
+        "confidence": "primary-verified",
+        "sources": [
+          "aero-hub"
+        ]
+      },
+      {
+        "claim": "Upgrades are one-way: once you upgrade, you cannot convert back. Nothing converts automatically for self-custody holders.",
+        "confidence": "primary-verified",
+        "sources": [
+          "aero-hub"
+        ]
+      },
+      {
+        "claim": "Conversion: legacy AERO to new AERO at 1:1; VELO to AERO at 0.044 per VELO (the hub says this rate was calculated from projected supplies). veAERO and veVELO become sAERO positions.",
+        "confidence": "primary-verified",
+        "sources": [
+          "aero-hub"
+        ]
+      }
+    ],
+    "implication": "Anyone still holding legacy AERO or VELO, a veNFT, or staked legacy LP is earning no new emissions on the legacy side. See the upgrade checklist on this site."
+  },
+  "control": {
+    "upgradeability": {
+      "value": "partially checked",
+      "detail": "basescan shows no proxy for the AERO Token (0x3f5b...a4Ee) or AerodromeMigration (0x22a2...6721), and optimistic.etherscan shows none for VelodromeMigration. For VotingEscrow (0xBF79...3915) basescan only says heuristics suggest it may be a proxy; unresolved. The security page does not describe proxies or timelocks.",
+      "confidence": "primary-verified (explorer pages read 2026-11-21); VotingEscrow unresolved",
+      "sources": [
+        "bs-token",
+        "bs-ve",
+        "bs-migr",
+        "op-velo-migr",
+        "aero-security"
+      ]
+    },
+    "admin_roles": [
+      {
+        "role": "Emergency Council (multisig)",
+        "holder": "multisig; address, signers and threshold are NOT published on the security page",
+        "powers": [
+          "set a new emergencyCouncil",
+          "deactivate and activate gauges (set caps to zero or non-zero), which switches a pool's emissions off or on",
+          "pause the migration contracts"
+        ],
+        "note": "The page says it can be called upon by a governance proposal or in emergency situations.",
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "GOVERNANCE_ROLE",
+        "holder": "not stated",
+        "powers": [
+          "top-level governance authority over Aero core"
+        ],
+        "confidence": "primary-verified (role named; holder unknown)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "CONFIG_ADMIN_ROLE",
+        "holder": "not stated",
+        "powers": [
+          "administers the configuration roles listed below"
+        ],
+        "confidence": "primary-verified (role named; holder unknown)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "VOTER_CONFIG_ROLE",
+        "holder": "not stated",
+        "powers": [
+          "voter parameters such as allocation cooldowns and max gauges"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "CHAIN_CONFIG_ROLE / CHAIN_STATUS_ROLE",
+        "holder": "not stated",
+        "powers": [
+          "register leaf chains; activate or halt a chain"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "ADAPTER_CONFIG_ROLE",
+        "holder": "not stated",
+        "powers": [
+          "configure cross-chain messaging adapters"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "SPLITTER_CONFIG_ROLE",
+        "holder": "not stated",
+        "powers": [
+          "set the Splitter recipient list for the team share of emissions"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "TOKEN_WHITELIST_ROLE",
+        "holder": "not stated",
+        "powers": [
+          "per-veNFT allowances"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "MODULE_ADMIN_ROLE",
+        "holder": "not stated",
+        "powers": [
+          "register modules for gauge creation and payments"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "SEIZER_ROLE",
+        "holder": "not stated",
+        "powers": [
+          "seize token-metadata NFTs on the TokenNFT contract"
+        ],
+        "note": "As described, the scope is token-metadata NFTs, not user positions. Not checked in source code.",
+        "confidence": "primary-verified (as documented); scope not code-checked",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "Other named roles",
+        "holder": "not stated",
+        "powers": [
+          "FACTORY_REGISTRY_ADMIN_ROLE, RELAY_DEPLOYER_ROLE, GAS_CONFIGURER_ROLE and NATIVE_WITHDRAWER_ROLE are named on the security page without a detailed scope"
+        ],
+        "confidence": "primary-verified (names only)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "Slipstream: Protocol governance multisig",
+        "holder": "multisig; address not published on the security page",
+        "powers": [
+          "Owner, Swap Fee Manager, Unstaked Fee Manager, Discount Registry Manager, Pool Tape Manager and Cap admin (CAP_ADMIN_ROLE) for Slipstream pools"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-security"
+        ]
+      },
+      {
+        "role": "Slipstream: Operator multisig",
+        "holder": "multisig; address not published on the security page",
+        "powers": [
+          "Cap operator (CAP_OPERATOR_ROLE): change caps within an operator range, only on gauges whose cap is already non-zero"
+        ],
+        "confidence": "primary-verified (as documented)",
+        "sources": [
+          "aero-security"
+        ]
+      }
+    ],
+    "no_documented_power": "The security page does not describe any role as able to withdraw user LP principal. This is a statement about the documentation, not a code audit: NATIVE_WITHDRAWER_ROLE and SEIZER_ROLE are named without a full scope and should be checked in source.",
+    "emergency_powers": {
+      "value": "gauge deactivation and migration pause (Emergency Council)",
+      "confidence": "primary-verified (as documented)",
+      "sources": [
+        "aero-security"
+      ]
+    }
+  },
+  "addresses_base": {
+    "AERO Token (Token)": "0x3f5bF3EdAc59d650D8fDf9657a71F2f904A3a4Ee",
+    "VotingEscrow": "0xBF7977E1521e9a3032bf7243Ee4712f311f13915",
+    "Voter": "0x49d7d4f17Ec56Ef8fA04E464AF5D1A4942CC31e6",
+    "Minter": "0x59268A34ba897e82368feE39839FFC661D4f9C97",
+    "AerodromeMigration": "0x22a2F7340a3fB4C7C389D91eE954766B12476721",
+    "VelodromeMigrationEntrypoint": "0x6daE95FE833f190640dB1176F8C8a2e50C6a66c0",
+    "Deployer of the contracts above": "0xCaF2C1251465C90D91A16b2288D9d6389f836A0E",
+    "confidence": "Copied from the official security page on 2026-11-21 (read twice, identical). AERO Token, VotingEscrow and AerodromeMigration were also matched by name on basescan, and all three show the same deployer. Voter, Minter and VelodromeMigrationEntrypoint were not explorer-checked. This is a partial copy: always check the full official list.",
+    "sources": [
+      "aero-security",
+      "bs-token",
+      "bs-ve",
+      "bs-migr"
+    ]
+  },
+  "addresses_op_mainnet": {
+    "VelodromeMigration": "0x6daE95FE833f190640dB1176F8C8a2e50C6a66c0",
+    "confidence": "Official security page, 2026-11-21; optimistic.etherscan shows verified source 'VelodromeMigration', public tag 'Dromos: Velodrome Migration', and the same deployer 0xCaF2...6A0E.",
+    "sources": [
+      "aero-security",
+      "op-velo-migr"
+    ]
+  },
+  "audits": [
+    {
+      "firm": "ChainSecurity",
+      "scope": "Coordination Layer",
+      "dates": "2026-07-02 to 2026-08-25"
+    },
+    {
+      "firm": "ChainSecurity",
+      "scope": "Application Layer",
+      "dates": "2026-07-31 to 2026-08-20"
+    },
+    {
+      "firm": "ChainSecurity",
+      "scope": "Slipstream",
+      "dates": "2026-06-17 to 2026-08-10"
+    },
+    {
+      "firm": "ChainSecurity",
+      "scope": "Technical design review",
+      "dates": "not stated"
+    },
+    {
+      "firm": "Sherlock (Blackthorn Phase 1)",
+      "scope": "Core",
+      "dates": "2026-06-23 to 2026-07-14"
+    },
+    {
+      "firm": "Sherlock (Blackthorn Phase 2)",
+      "scope": "Pools, Core",
+      "dates": "2026-07-20 to 2026-08-17"
+    },
+    {
+      "firm": "Sherlock",
+      "scope": "Public pre-launch contest",
+      "dates": "Aug to Sep 2026"
+    }
+  ],
+  "audits_note": "As listed on the official security page, which itself notes that audits do not eliminate risk. Reports were not read this round.",
+  "bug_bounty": {
+    "value": "Ongoing Sherlock program, up to $500,000 for smart-contract reports on the deployed contracts listed on the security page; reports go only through Sherlock.",
+    "confidence": "primary-verified (as documented)",
+    "sources": [
+      "aero-security"
+    ]
+  },
+  "governance": {
+    "token": "AERO staked as sAERO (replaces veAERO and veVELO). Per the hub, an upgraded lock keeps its remaining time, rounded up to the next full week; a permanent lock becomes sAERO at Maximum Stake Duration.",
+    "attack_cost_model": "Not modelled: quorum, voting delay and timelock parameters were not found on the pages read.",
+    "confidence": "primary-verified for the staking conversion; parameters unknown",
+    "sources": [
+      "aero-hub"
+    ]
+  },
+  "incidents": [],
+  "incidents_note": "Not researched this round. This means 'not checked', not 'none'.",
+  "unknowns": [
+    "Addresses, signers and thresholds of the Emergency Council, the Protocol governance multisig and the Operator multisig",
+    "Who holds GOVERNANCE_ROLE and CONFIG_ADMIN_ROLE, and whether a timelock sits in front of them",
+    "Whether VotingEscrow and the other core contracts are upgradeable proxies",
+    "The exact scope of NATIVE_WITHDRAWER_ROLE and SEIZER_ROLE in code",
+    "Governance parameters (quorum, voting delay, timelock)",
+    "Incidents since launch (not researched this round)"
+  ],
+  "risk": {
+    "scores": {
+      "U_upgradeability": null,
+      "A_admin_power": 2,
+      "G_governance_capture": null,
+      "L_lifecycle": 1,
+      "I_incidents": null
+    },
+    "attention": "elevated (opacity: key holders unpublished)",
+    "rationale": "A=2 (provisional, documentation-based): documented emergency powers can switch off a pool's emissions and pause migration, and fee and cap managers can change pool economics; no documented role touches principal. U, G and I are not assessed; they are gaps, not zeros. L=1: a one-month-old launch with a one-way migration still in progress."
+  },
+  "sources": [
+    {
+      "id": "aero-hub",
+      "url": "https://aero.xyz/aero-upgrade/",
+      "type": "primary (official upgrade hub and FAQ)",
+      "accessed": "2026-11-21"
+    },
+    {
+      "id": "aero-security",
+      "url": "https://app.aero.xyz/docs/security/",
+      "type": "primary (official security page: addresses, roles, audits)",
+      "accessed": "2026-11-21"
+    },
+    {
+      "id": "bs-token",
+      "url": "https://basescan.org/address/0x3f5bF3EdAc59d650D8fDf9657a71F2f904A3a4Ee",
+      "type": "primary (block explorer)",
+      "accessed": "2026-11-21"
+    },
+    {
+      "id": "bs-ve",
+      "url": "https://basescan.org/address/0xBF7977E1521e9a3032bf7243Ee4712f311f13915",
+      "type": "primary (block explorer)",
+      "accessed": "2026-11-21"
+    },
+    {
+      "id": "bs-migr",
+      "url": "https://basescan.org/address/0x22a2F7340a3fB4C7C389D91eE954766B12476721",
+      "type": "primary (block explorer)",
+      "accessed": "2026-11-21"
+    },
+    {
+      "id": "op-velo-migr",
+      "url": "https://optimistic.etherscan.io/address/0x6daE95FE833f190640dB1176F8C8a2e50C6a66c0",
+      "type": "primary (block explorer)",
+      "accessed": "2026-11-21"
+    },
+    {
+      "id": "block-aero-merge",
+      "url": "https://theblock.co/news/defi/2026-10-21-aerodrome-velodrome-merge-aero-421514",
+      "type": "secondary (news)",
+      "accessed": "2026-11-20"
+    }
+  ],
+  "gac_inputs": null,
+  "gac_inputs_note": "Not modelled: governance parameters unknown, and vote weight is staked (sAERO), so capture cost depends on stake duration as well as price."
+}

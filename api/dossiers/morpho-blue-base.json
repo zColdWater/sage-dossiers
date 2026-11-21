@@ -1,0 +1,150 @@
+{
+  "schema": "sage-dossier/0.1",
+  "slug": "morpho-blue-base",
+  "name": "Morpho Blue (Morpho Markets V1) — core contract",
+  "chain": "base",
+  "category": "lending (isolated markets)",
+  "as_of": "2026-11-20",
+  "author": "Sage, an AI research agent. Every claim carries a source and a confidence level.",
+  "scope_note": "Covers the Morpho Blue core singleton only. Vault (MetaMorpho / curated vault) risk and per-market oracle risk are NOT covered here and usually dominate real-world outcomes.",
+  "headline": "Core contract has no upgrade path; the owner can only add options and take up to 25% of interest. Your risk lives in which market/vault you pick, not in the core.",
+  "summary_zh": "Morpho Blue 核心合约不可升级，owner 只能「加选项」（新 IRM、新 LLTV，加了不能删）和对单个市场收取最多 25% 的利息分成，碰不到本金、不能暂停、不能改已有市场参数。真正的风险在你选的市场（预言机、LLTV）和金库策展人，而不在核心合约。",
+  "control": {
+    "upgradeability": {
+      "value": "none",
+      "detail": "Morpho.sol is deployed directly: no proxy pattern, no upgrade function, no delegatecall. Solidity pragma pinned to 0.8.19.",
+      "confidence": "primary-verified",
+      "sources": [
+        "morpho-code"
+      ]
+    },
+    "admin_roles": [
+      {
+        "role": "owner",
+        "holder": "not verified this round — read owner() on the Base deployment",
+        "powers": [
+          "setOwner(newOwner) — transfer ownership",
+          "enableIrm(irm) — whitelist a new interest-rate model for FUTURE markets; reverts if already enabled",
+          "enableLltv(lltv) — whitelist a new liquidation LTV; must be < 100% (lltv < WAD)",
+          "setFee(marketParams, newFee) — set the protocol fee on an existing market, capped at MAX_FEE = 0.25e18 (25%)",
+          "setFeeRecipient(newFeeRecipient) — choose where protocol fees go"
+        ],
+        "cannot": [
+          "disable an IRM or LLTV once enabled (no such function exists; flags are only ever set to true)",
+          "pause the protocol (no pause function found in owner set)",
+          "change an existing market's collateral, loan asset, oracle, IRM or LLTV",
+          "move user funds"
+        ],
+        "confidence": "primary-verified",
+        "sources": [
+          "morpho-code",
+          "morpho-consts"
+        ]
+      }
+    ],
+    "timelock": {
+      "value": "not applicable to core (owner actions are bounded); vault-level timelocks exist but are out of scope",
+      "confidence": "primary-verified",
+      "sources": [
+        "morpho-code"
+      ]
+    },
+    "emergency_powers": {
+      "value": "none found in core contract",
+      "confidence": "primary-verified",
+      "sources": [
+        "morpho-code"
+      ]
+    }
+  },
+  "markets": {
+    "creation": "permissionless — no governance vote needed",
+    "immutability": "each market's 5 parameters (collateral asset, loan asset, LLTV, oracle, IRM) are fixed at creation and persist in perpetuity",
+    "approved_lltvs_per_docs": [
+      "0%",
+      "38.5%",
+      "62.5%",
+      "77.0%",
+      "86.0%",
+      "91.5%",
+      "94.5%",
+      "96.5%",
+      "98.0%"
+    ],
+    "approved_irms_per_docs": [
+      "AdaptiveCurveIRM (the only governance-approved IRM per docs)"
+    ],
+    "implication": "A market with a bad oracle stays bad forever; nobody can fix it in place. Check the oracle address on each market page before depositing.",
+    "confidence": "primary-verified",
+    "sources": [
+      "morpho-docs-market",
+      "morpho-readme"
+    ]
+  },
+  "constants": {
+    "MAX_FEE": "0.25e18 (25% of interest)",
+    "ORACLE_PRICE_SCALE": "1e36",
+    "LIQUIDATION_CURSOR": "0.3e18",
+    "MAX_LIQUIDATION_INCENTIVE_FACTOR": "1.15e18",
+    "confidence": "primary-verified",
+    "sources": [
+      "morpho-consts"
+    ]
+  },
+  "governance": {
+    "token": "MORPHO (token-governance details not verified this round)",
+    "attack_cost_model": "not applicable to principal: even full control of the owner key cannot touch deposits; worst case is a 25% fee on interest for a market and a new fee recipient.",
+    "confidence": "primary-verified (for the bounded-power claim); token details unverified",
+    "sources": [
+      "morpho-code",
+      "morpho-consts"
+    ]
+  },
+  "incidents": [],
+  "incidents_note": "No incident verified this round. Absence of evidence is not evidence of absence.",
+  "unknowns": [
+    "Exact Base deployment address of the core contract (verify on docs.morpho.org addresses page)",
+    "Current owner() holder on Base and its multisig threshold",
+    "MORPHO token governance process and parameters",
+    "Vault-level (curator / allocator / guardian) configuration for any specific vault"
+  ],
+  "risk": {
+    "scores": {
+      "U_upgradeability": 0,
+      "A_admin_power": 1,
+      "G_governance_capture": 0,
+      "L_lifecycle": 0,
+      "I_incidents": 0
+    },
+    "attention": "low (core only)",
+    "rationale": "Immutable core with a hard 25% cap on the only economic lever the owner has. Score A=1 because the owner can still change lender yield via fees. Do not read this as 'Morpho deposits are safe': market oracle choice and vault curation are where losses actually happen."
+  },
+  "sources": [
+    {
+      "id": "morpho-code",
+      "url": "https://github.com/morpho-org/morpho-blue/blob/main/src/Morpho.sol",
+      "type": "primary (source code)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "morpho-consts",
+      "url": "https://github.com/morpho-org/morpho-blue/blob/main/src/libraries/ConstantsLib.sol",
+      "type": "primary (source code)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "morpho-docs-market",
+      "url": "https://docs.morpho.org/learn/concepts/market/",
+      "type": "primary (official docs)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "morpho-readme",
+      "url": "https://github.com/morpho-org/morpho-blue",
+      "type": "primary (repository README)",
+      "accessed": "2026-11-20"
+    }
+  ],
+  "gac_inputs": null,
+  "gac_inputs_note": "Not applicable: no token vote can touch principal in the core contract."
+}

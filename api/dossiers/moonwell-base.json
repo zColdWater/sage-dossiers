@@ -1,0 +1,184 @@
+{
+  "schema": "sage-dossier/0.1",
+  "slug": "moonwell-base",
+  "name": "Moonwell (Base deployment)",
+  "chain": "base",
+  "category": "lending (pooled, Compound-style)",
+  "as_of": "2026-11-20",
+  "author": "Sage, an AI research agent. Every claim carries a source and a confidence level.",
+  "scope_note": "Covers governance and control of the Base deployment. Market-by-market collateral factors and oracle configs are not covered.",
+  "headline": "Token-holder governance with a token-denominated quorum and a 1-minute voting delay. Its sister deployment on Moonriver was hit by a ~$1,800 governance takeover attempt in March 2026 that put ~$1.08M at risk, and Moonwell took ~$1.8M of bad debt from an oracle misconfiguration earlier in 2026.",
+  "summary_zh": "Moonwell 由代币持有人治理，法定人数按「代币数量」而非价值计（Base/OP/Moonbeam 链上提案需 1 亿 WELL），投票延迟仅 1 分钟。2026 年 3 月，其 Moonriver 部署遭治理攻击：攻击者约花 1,800 美元买入约 4,000 万 MFAM——恰好等于 Moonriver 文档中的链上法定人数 4,000 万——11 分钟内完成买币、提案、投票，威胁约 108 万美元用户资金。同年早些时候还因 cbETH 预言机配置错误产生约 180 万美元坏账。2026 年 5 月治理中枢从 Moonbeam 迁至以太坊主网（MIP-X58）。",
+  "control": {
+    "upgradeability": {
+      "value": "not verified this round",
+      "detail": "Moonwell is a Compound-style lending protocol; admin of comptroller/markets sits with governance executed on Base. Whether specific contracts are proxies was not checked on-chain this round.",
+      "confidence": "unverified",
+      "sources": []
+    },
+    "execution_path_to_base": {
+      "value": "Historically: votes on the Multichain Governor (Moonbeam, introduced by MIP-M23 in 2024), then a Wormhole message 'teleports' the proposal to a Temporal Governor on Base with a 24-hour timelock. In mid-May 2026 MIP-X58 moved the governance hub from Moonbeam to Ethereum mainnet; the post-migration execution path and guardian assignments were not verified this round.",
+      "confidence": "secondary-reported",
+      "sources": [
+        "cb-x58",
+        "vtm-x58",
+        "goverland-guardian",
+        "halborn-xchain"
+      ]
+    },
+    "guardians": [
+      {
+        "role": "Break Glass Guardian (governance guardian)",
+        "powers": [
+          "return governance control to the governanceReturnGuardian address set in the Multichain Governor; described by commentators as able to bypass the timelock in an emergency (one source calls it a 2-of-3 Safe)"
+        ],
+        "confidence": "secondary-reported",
+        "sources": [
+          "goverland-guardian",
+          "block-attack"
+        ]
+      },
+      {
+        "role": "Temporal Governance Guardian",
+        "powers": [
+          "pause Temporal Governance if Wormhole is compromised; while paused, the 24h timelock can be overridden by fast-tracked proposals this guardian signs; signers ratified in MIP-B0 (Base activation)"
+        ],
+        "confidence": "secondary-reported",
+        "sources": [
+          "goverland-guardian"
+        ]
+      }
+    ]
+  },
+  "governance": {
+    "tokens": "WELL on Base, OP Mainnet and Moonbeam; MFAM on Moonriver. Tokens must be delegated before proposing or voting.",
+    "params_onchain_WELL": {
+      "proposal_threshold": "1,000,000 WELL",
+      "quorum": "100,000,000 WELL",
+      "voting_period": "3 days",
+      "voting_delay": "1 minute",
+      "cross_chain_vote_collection": "1 day",
+      "max_live_proposals_per_address": 5
+    },
+    "params_snapshot_WELL": {
+      "proposal_threshold": "200,000",
+      "quorum": "10,000,000",
+      "voting_period": "3 days"
+    },
+    "params_onchain_MFAM_moonriver": {
+      "proposal_threshold": "500,000 MFAM",
+      "quorum": "40,000,000 MFAM",
+      "voting_period": "3 days",
+      "voting_delay": "1 minute"
+    },
+    "observations": [
+      "Quorum is denominated in tokens, not dollars. If the token price falls or liquidity thins, the dollar cost of reaching quorum falls with it.",
+      "A 1-minute voting delay leaves essentially no gap between acquiring tokens and voting with them.",
+      "Moonriver cross-check: the documented MFAM on-chain quorum is 40,000,000; the March 2026 attacker reportedly bought ~40 million MFAM for ~$1,800 — i.e. roughly exactly a quorum-sized position."
+    ],
+    "attack_cost_model": "GAC_lower_bound_usd = max(quorum, opposing_votes + 1) x token_price_usd, before slippage. For Base: 100,000,000 x WELL price. Use the /sage/gac calculator with a live price.",
+    "confidence": "primary-verified (parameters from official docs); observations are Sage's analysis",
+    "sources": [
+      "mw-gov",
+      "mw-params",
+      "block-attack"
+    ]
+  },
+  "incidents": [
+    {
+      "date": "2026-03-26",
+      "title": "Governance takeover attempt on Moonwell's Moonriver deployment",
+      "summary": "Attacker reportedly spent ~$1,800 to acquire ~40M MFAM and, within ~11 minutes, bought tokens, created and voted a proposal to transfer control of seven lending markets, the comptroller and the oracle to an attacker-controlled contract. ~$1.08M of user funds was reported at risk. Named defenses: token holders outvoting it, or the Break Glass Guardian overriding governance. Outcome was not stated in the source read.",
+      "deployment": "Moonriver (not Base) — included because Base shares the same governance design family",
+      "confidence": "secondary-reported",
+      "sources": [
+        "block-attack"
+      ]
+    },
+    {
+      "date": "2026 (before March)",
+      "title": "~$1.8M bad debt from a faulty oracle configuration affecting cbETH",
+      "summary": "Reported as background in The Block's March 2026 article. Deployment and exact date not verified this round.",
+      "confidence": "secondary-reported",
+      "sources": [
+        "block-attack"
+      ]
+    }
+  ],
+  "unknowns": [
+    "Post-MIP-X58 (May 2026) execution path to Base and current guardian signers/thresholds",
+    "Outcome of the March 2026 Moonriver proposal",
+    "Live WELL price and on-chain liquidity depth (needed for a real GAC number)",
+    "Proxy/upgradeability status of Base contracts"
+  ],
+  "risk": {
+    "scores": {
+      "U_upgradeability": null,
+      "A_admin_power": 3,
+      "G_governance_capture": 2,
+      "L_lifecycle": 1,
+      "I_incidents": 2
+    },
+    "attention": "elevated (governance + incidents)",
+    "rationale": "A=3 because a passed proposal can hand comptroller and oracle control to any address (exactly what the Moonriver proposal attempted) — admin power is total, so the quality of governance is everything. G=2: token-denominated quorum and 1-minute voting delay, partially offset by a 24h timelock and guardians. L=1: governance hub migrated in May 2026 (configuration-change risk). I=2: one material loss (~$1.8M bad debt) plus one takeover attempt with unknown outcome."
+  },
+  "sources": [
+    {
+      "id": "mw-gov",
+      "url": "https://docs.moonwell.fi/moonwell/governance/moonwell-governance.md",
+      "type": "primary (official docs)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "mw-params",
+      "url": "https://docs.moonwell.fi/moonwell/governance/moonwell-governance/parameters.md",
+      "type": "primary (official docs)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "block-attack",
+      "url": "https://www.theblock.co/news/defi/2026-03-26-moonwell-governance-attack-395272",
+      "type": "secondary (news, read in full)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "cb-x58",
+      "url": "https://cryptobriefing.com/moonwell-governance-ethereum-mainnet-mip-x58/",
+      "type": "secondary (news, via search summary)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "vtm-x58",
+      "url": "https://www.valuethemarkets.com/cryptocurrency/news/moonwell-shifts-governance-from-moonbeam-to-ethereum-mainnet",
+      "type": "secondary (news, via search summary)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "goverland-guardian",
+      "url": "https://gl.app/dao/moonwell-governance.eth/proposals/0x8e8726e806a1d31451b362ffefeb6ec5a725b9b78d4c207e3cf4468bf9a436ca",
+      "type": "secondary (governance proposal mirror, via search summary)",
+      "accessed": "2026-11-20"
+    },
+    {
+      "id": "halborn-xchain",
+      "url": "https://www.halborn.com/audits/moonwell/moonwell-cross-chain-governance",
+      "type": "primary (audit listing, not read in full)",
+      "accessed": "2026-11-20"
+    }
+  ],
+  "gac_inputs": {
+    "token": "WELL",
+    "quorum_votes": 100000000,
+    "threshold_votes": 1000000,
+    "voting_delay": "1 minute",
+    "timelock": "24h (historical Temporal Governor; post-May-2026 not verified)",
+    "note": "Base on-chain MIP quorum per official docs. Supply your own live WELL price.",
+    "case_study": {
+      "name": "Moonwell Moonriver attempt, 2026-03",
+      "token": "MFAM",
+      "quorum_votes": 40000000,
+      "reported_cost_usd": 1800,
+      "reported_value_at_risk_usd": 1080000
+    }
+  }
+}
